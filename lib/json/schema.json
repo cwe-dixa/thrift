@@ -1,9 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-
   "id": "http://thrift.apache.org/schema.json#",
   "description": "Schema for Apache Thrift protocol descriptors",
-
   "definitions": {
     "type-id": {
       "title": "Any type id (name)",
@@ -23,7 +21,8 @@
         "union",
         "struct",
         "binary",
-        "uuid"
+        "uuid",
+        "enum"
       ]
     },
     "base-type": {
@@ -31,64 +30,120 @@
       "type": "object",
       "properties": {
         "typeId": {
-          "enum": ["void", "string", "bool", "byte", "i8", "i16", "i32", "i64", "double", "binary", "uuid" ]
+          "enum": [
+            "void",
+            "string",
+            "bool",
+            "byte",
+            "i8",
+            "i16",
+            "i32",
+            "i64",
+            "double",
+            "binary",
+            "uuid"
+          ]
         }
       },
-      "required": [ "typeId" ]
+      "required": [
+        "typeId"
+      ]
     },
     "list-type": {
       "title": "List and set schema",
       "type": "object",
       "properties": {
         "typeId": {
-          "enum": [ "list", "set" ]
+          "enum": [
+            "list",
+            "set"
+          ]
         },
-        "elemTypeId":  { "$ref": "#/definitions/type-id" },
-        "elemType":    { "$ref": "#/definitions/type-desc" }
+        "elemTypeId": {
+          "$ref": "#/definitions/type-id"
+        },
+        "elemType": {
+          "$ref": "#/definitions/type-desc"
+        }
       },
-      "required": [ "typeId", "elemTypeId" ]
+      "required": [
+        "typeId",
+        "elemTypeId"
+      ]
     },
     "map-type": {
       "title": "Map schema",
       "type": "object",
       "properties": {
         "typeId": {
-          "enum": [ "map" ]
+          "enum": [
+            "map"
+          ]
         },
-        "keyTypeId":   { "$ref": "#/definitions/type-id" },
-        "keyType":     { "$ref": "#/definitions/type-desc" },
-        "valueTypeId": { "$ref": "#/definitions/type-id" },
-        "valueType":   { "$ref": "#/definitions/type-desc" }
+        "keyTypeId": {
+          "$ref": "#/definitions/type-id"
+        },
+        "keyType": {
+          "$ref": "#/definitions/type-desc"
+        },
+        "valueTypeId": {
+          "$ref": "#/definitions/type-id"
+        },
+        "valueType": {
+          "$ref": "#/definitions/type-desc"
+        }
       },
-      "required": [ "typeId", "keyTypeId", "valueTypeId" ]
+      "required": [
+        "typeId",
+        "keyTypeId",
+        "valueTypeId"
+      ]
     },
     "struct-type": {
       "title": "Struct, union and exception schema",
       "type": "object",
       "properties": {
         "typeId": {
-          "enum": [ "union", "struct", "exception" ]
+          "enum": [
+            "union",
+            "struct",
+            "exception"
+          ]
         }
       },
-      "required": [ "typeId", "class" ]
+      "required": [
+        "typeId",
+        "class"
+      ]
     },
     "type-desc": {
       "title": "Type descriptor schema",
       "allOf": [
         {
-            "type": "object",
-            "properties": {
-                "typeId":      { "type": "string" },
-                "class":       { "type": "string" }
+          "type": "object",
+          "properties": {
+            "typeId": {
+              "type": "string"
+            },
+            "class": {
+              "type": "string"
             }
+          }
         },
         {
-          "oneOf":
-          [
-            { "$ref": "#/definitions/base-type" },
-            { "$ref": "#/definitions/list-type" },
-            { "$ref": "#/definitions/map-type" },
-            { "$ref": "#/definitions/struct-type" }
+          "oneOf": [
+            {
+              "$ref": "#/definitions/base-type"
+            },
+            {
+              "$ref": "#/definitions/list-type"
+            },
+            {
+              "$ref": "#/definitions/map-type"
+            },
+            {
+              "$ref": "#/definitions/struct-type"
+            }
           ]
         }
       ]
@@ -97,28 +152,45 @@
       "title": "Name and documentation sub-schema",
       "type": "object",
       "properties": {
-        "name": { "type": "string" },
-        "doc": { "type": "string" }
+        "name": {
+          "type": "string"
+        },
+        "doc": {
+          "type": "string"
+        }
       },
-      "required": [ "name" ]
+      "required": [
+        "name"
+      ]
     },
     "enum": {
       "title": "Thrift 'enum' definition schema",
       "type": "object",
       "allOf": [
-        { "$ref": "#/definitions/name-and-doc" },
         {
-          "required": [ "members" ],
+          "$ref": "#/definitions/name-and-doc"
+        },
+        {
+          "required": [
+            "members"
+          ],
           "properties": {
             "members": {
               "type": "array",
               "items": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "value": { "type": "integer" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "integer"
+                  }
                 },
-                "required": [ "name", "value" ]
+                "required": [
+                  "name",
+                  "value"
+                ]
               }
             }
           }
@@ -129,13 +201,21 @@
       "title": "Thrift typedef definition schema",
       "type": "object",
       "allOf": [
-        { "$ref": "#/definitions/name-and-doc" },
+        {
+          "$ref": "#/definitions/name-and-doc"
+        },
         {
           "properties": {
-            "typeId": { "$ref": "#/definitions/type-id" },
-            "type": { "$ref": "#/definitions/type-desc" }
+            "typeId": {
+              "$ref": "#/definitions/type-id"
+            },
+            "type": {
+              "$ref": "#/definitions/type-desc"
+            }
           },
-          "required": [ "typeId" ]
+          "required": [
+            "typeId"
+          ]
         }
       ]
     },
@@ -143,20 +223,34 @@
       "title": "Thrift constant definition schema",
       "type": "object",
       "allOf": [
-        { "$ref": "#/definitions/name-and-doc" },
-        { "$ref": "#/definitions/type-desc" },
+        {
+          "$ref": "#/definitions/name-and-doc"
+        },
+        {
+          "$ref": "#/definitions/type-desc"
+        },
         {
           "properties": {
             "value": {
               "oneOf": [
-                { "type": "string" },
-                { "type": "number" },
-                { "type": "array" },
-                { "type": "object" }
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "array"
+                },
+                {
+                  "type": "object"
+                }
               ]
             }
           },
-          "required": [ "value" ]
+          "required": [
+            "value"
+          ]
         }
       ]
     },
@@ -164,7 +258,9 @@
       "title": "Thrift struct field definition schema",
       "type": "object",
       "allOf": [
-        { "$ref": "#/definitions/name-and-doc" },
+        {
+          "$ref": "#/definitions/name-and-doc"
+        },
         {
           "properties": {
             "key": {
@@ -173,20 +269,39 @@
               "maximum": 65535
             },
             "required": {
-              "enum": [ "required", "optional", "req_out" ]
+              "enum": [
+                "required",
+                "optional",
+                "req_out"
+              ]
             },
-            "typeId": { "$ref": "#/definitions/type-id" },
-            "type": { "$ref": "#/definitions/type-desc" },
+            "typeId": {
+              "$ref": "#/definitions/type-id"
+            },
+            "type": {
+              "$ref": "#/definitions/type-desc"
+            },
             "default": {
               "oneOf": [
-                { "type": "string" },
-                { "type": "number" },
-                { "type": "array" },
-                { "type": "object" }
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "array"
+                },
+                {
+                  "type": "object"
+                }
               ]
             }
           },
-          "required": [ "key", "required" ]
+          "required": [
+            "key",
+            "required"
+          ]
         }
       ]
     },
@@ -194,11 +309,17 @@
       "title": "Thrift struct definition schema",
       "type": "object",
       "allOf": [
-        { "$ref": "#/definitions/name-and-doc" },
+        {
+          "$ref": "#/definitions/name-and-doc"
+        },
         {
           "properties": {
-            "isException": { "type": "boolean" },
-            "isUnion": { "type": "boolean" },
+            "isException": {
+              "type": "boolean"
+            },
+            "isUnion": {
+              "type": "boolean"
+            },
             "fields": {
               "type": "array",
               "items": {
@@ -206,7 +327,11 @@
               }
             }
           },
-          "required": [ "isException", "isUnion", "fields" ]
+          "required": [
+            "isException",
+            "isUnion",
+            "fields"
+          ]
         }
       ]
     },
@@ -223,17 +348,31 @@
           "minimum": 1,
           "maximum": 65535
         },
-        "name": { "type": "string" },
-        "typeId": { "enum": [ "exception" ] },
-        "type": { "$ref": "#/definitions/struct-type" }
+        "name": {
+          "type": "string"
+        },
+        "typeId": {
+          "enum": [
+            "exception"
+          ]
+        },
+        "type": {
+          "$ref": "#/definitions/struct-type"
+        }
       },
-      "required": [ "key", "name", "typeId" ]
+      "required": [
+        "key",
+        "name",
+        "typeId"
+      ]
     },
     "function": {
       "title": "Thrift service function definition schema",
       "type": "object",
       "allOf": [
-        { "$ref": "#/definitions/name-and-doc" },
+        {
+          "$ref": "#/definitions/name-and-doc"
+        },
         {
           "properties": {
             "oneway": {
@@ -250,10 +389,16 @@
             },
             "exceptions": {
               "type": "array",
-              "items": { "$ref": "#/definitions/exception" }
+              "items": {
+                "$ref": "#/definitions/exception"
+              }
             }
           },
-          "required": [ "oneway", "arguments", "exceptions" ]
+          "required": [
+            "oneway",
+            "arguments",
+            "exceptions"
+          ]
         }
       ]
     },
@@ -261,7 +406,9 @@
       "title": "Thrift service definition schema",
       "type": "object",
       "allOf": [
-        { "$ref": "#/definitions/name-and-doc" },
+        {
+          "$ref": "#/definitions/name-and-doc"
+        },
         {
           "properties": {
             "functions": {
@@ -271,7 +418,9 @@
               }
             }
           },
-          "required": [ "functions" ]
+          "required": [
+            "functions"
+          ]
         }
       ]
     },
@@ -283,7 +432,6 @@
       }
     }
   },
-
   "type": "object",
   "required": [
     "name",
